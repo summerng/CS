@@ -1,2 +1,2 @@
-# CS-Final-Project-2019
+# CS
 Final project for SI 206
