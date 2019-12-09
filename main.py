@@ -31,20 +31,51 @@ cache_file.close()
 
 # score of life in NYC
 nyc_score = cache_dict_teleport["teleport_city_score"]
-# testing branch
 
-base_url_nyt = "https://api.nytimes.com/svc/search/v2/articlesearch.json?facet_fields=section_name&facet_filter=true&fq=NYRegion&page=1&sort=newest&api-key=SvJpgvBj8k1I1TILI9oOGjA01uR2JQkc"
-r_nyt = requests.get(base_url_nyt) 
-d_nyt = r_nyt.json()
+"""
+NYT API only returns 10 results at a time, so we have to
+call it 10 times for a total of 100 results.
+"""
 
-# creating cache dictionary for NYT api
-cache_nyt = dir_path + '/' + "nyt_cache.json"
-with open(cache_nyt, "w") as json_file:
-    json.dump(d_nyt, json_file)
+def duplicates(headline, filename):
+    f = open(filename, "r")
+    if headline in f:
+        break
+    else:
+        cache_nyt_file.write(headline + "\n")
+
+# writing for loop
+for x in range(10): 
+
+    # calling NYT API
+    base_url_nyt = "https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=section_name%3A%22New%20York%22&sort=newest&begin_date=20191108&end_date=20191208&page={}&api-key=IeOc9X1YnyZgg5W1JAujzDAKJaG8H1bR".format(x)
+
+    r_nyt = requests.get(base_url_nyt) 
+    d_nyt = r_nyt.json()
+
+    cache_nyt = dir_path + '/' + "nyt_cache.json"
+    if os.path.isfile(cache_nyt):
+        cache_nyt_read = open(cache_nyt, "r")
+        lines = cache_nyt_read.readlines()
+        if len(lines) < 100:
+            cache_nyt_file = open(cache_nyt, "a")
+            for d in d_nyt["response"]["docs"]:
+                headline = d["abstract"]
+                duplicates(headline, cache_nyt_file)
+            cache_nyt_file.close()
+
+    else:
+        # creating cache for NYT files
+        cache_nyt_file = open(cache_nyt, "w")
+        for d in d_nyt["response"]["docs"]:
+            headline = d["abstract"]
+            cache_nyt_file.write(headline + "\n")
+        cache_nyt_file.close()
+
 
 # reading cache dictionary contents
-cache_file_nyt = open(cache_nyt, 'r')
+"""cache_file_nyt = open(cache_nyt, 'r')
 cache_contents_nyt = cache_file_nyt.read()
 cache_dict_nyt= json.loads(cache_contents_nyt)
-cache_file_nyt.close()
+cache_file_nyt.close()"""
 
