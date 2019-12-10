@@ -40,12 +40,12 @@ call it 10 times for a total of 100 results.
 def duplicates(headline, filename):
     f = open(filename, "r")
     if headline in f:
-        break
+        pass
     else:
         cache_nyt_file.write(headline + "\n")
 
 # writing for loop
-for x in range(10): 
+for x in range(11): 
 
     # calling NYT API
     base_url_nyt = "https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=section_name%3A%22New%20York%22&sort=newest&begin_date=20191108&end_date=20191208&page={}&api-key=IeOc9X1YnyZgg5W1JAujzDAKJaG8H1bR".format(x)
@@ -61,7 +61,9 @@ for x in range(10):
             cache_nyt_file = open(cache_nyt, "a")
             for d in d_nyt["response"]["docs"]:
                 headline = d["abstract"]
-                duplicates(headline, cache_nyt_file)
+                if headline not in lines:
+                    cache_nyt_file.write(headline + "\n")
+            cache_nyt_read.close()
             cache_nyt_file.close()
 
     else:
