@@ -57,7 +57,7 @@ for x in range(11):
             # appending more lines to file
             cache_nyt_file = open(cache_nyt, "a")
             for d in d_nyt["response"]["docs"]:
-                headline = d["abstract"]
+                headline = d["headline"]["main"]
                 if headline not in lines:
                     cache_nyt_file.write(headline)
                     cache_nyt_file.write("\n")
@@ -71,7 +71,7 @@ for x in range(11):
         # creating cache for NYT files
         cache_nyt_file = open(cache_nyt, "w")
         for d in d_nyt["response"]["docs"]:
-            headline = d["abstract"]
+            headline = d["headline"]["main"]
             cache_nyt_file.write(headline)
             cache_nyt_file.write("\n")
         cache_nyt_file.close()
@@ -84,7 +84,7 @@ cache_contents_nyt = cache_file_nyt.read()
 cache_dict_nyt= json.loads(cache_contents_nyt)
 cache_file_nyt.close()"""
 
-# PART 3: Calling the Parallel Dots (word sentiment analyzer) API
+"""# PART 3: Calling the Parallel Dots (word sentiment analyzer) API
 paralleldots.set_api_key("RI2jA3tZ4QUsNnLzdytEQ0cn9GSEkMgrGkXzgg1P8Hk")
 
 cache_sentiment = dir_path + '/' + "sentiment.json"
@@ -94,7 +94,7 @@ sentiment = paralleldots.batch_sentiment(lines, lang_code)  #reminder that lines
 # writing cache file
 with open(cache_sentiment, "w") as json_file:
     json.dump(sentiment, json_file)
-json_file.close()
+json_file.close()"""
 
 # PART 4: Creating the Headlines database
 
