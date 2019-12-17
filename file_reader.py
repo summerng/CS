@@ -1,5 +1,4 @@
 import os
-import plotly.express as px
 
 def file_reader(filename):
 
