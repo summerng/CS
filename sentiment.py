@@ -87,13 +87,13 @@ def call_sentiment_api(database_filename, conn, cur):
 
     conn.commit()
 
-    print("Added {} rows to the sentiment tables in \"{}\".".format(len(call_list), database_filename))
+    print("\tAdded {} rows to the sentiment tables in \"{}\".".format(len(call_list), database_filename))
     cur.execute('SELECT "Headline and Abstract" FROM "Negative Sentiment Per Headline and Abstract"')
-    print("There are now {} total rows for each sentiment table in \"{}\".".format(len(cur.fetchall()), database_filename))
+    print("\tThere are now {} total rows for each sentiment table in \"{}\".".format(len(cur.fetchall()), database_filename))
 
     
 
-    get_more = input("Would you like to calculate 2o more values? Yes or No: ")
+    get_more = input("\tWould you like to calculate 2o more values? Yes or No: ")
 
     if get_more == "Yes":
         call_sentiment_api(database_filename, conn, cur)

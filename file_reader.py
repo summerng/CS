@@ -2,7 +2,7 @@ import os
 
 def ask_for_csv_filename():
     # Get the filename of the headline/abstract database via user input
-    csv_filename = input("Please enter a name for the csv file you would like to use to compose the visualization: ")
+    csv_filename = input("\tPlease enter a name for the csv file you would like to use to compose the visualization: ")
     if not csv_filename.endswith(".csv"):
         csv_filename += ".csv"
     return csv_filename

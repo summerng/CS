@@ -21,6 +21,15 @@ def get_headlines_and_abstracts(database_filename, conn, cur):
     # creating database
     #ur = conn.cursor()
 
+    # Print opening message for this program action
+    print(
+    """
+    ================================================================================
+    =         Collect 20 headlines and abstracts from New York Times API           =
+    ================================================================================
+    """
+    )
+
     cur.execute("CREATE TABLE IF NOT EXISTS Headlines (id INTEGER PRIMARY KEY, Headline TEXT)")
     #for headline in lines: #reminder that lines was a variable defined above that is just a list of all of the headlines
     #    cur.execute("INSERT INTO Headlines (Headline) VALUES (?)", [headline])
@@ -81,11 +90,11 @@ def get_headlines_and_abstracts(database_filename, conn, cur):
     conn.commit()
 
     
-    print("Added {} rows to all three tables in \"{}\".".format(tot, database_filename))
+    print("\tAdded {} rows to all three tables in \"{}\".".format(tot, database_filename))
     cur.execute('SELECT Headline FROM Headlines')
-    print("There are now {} total rows for each table in \"{}\".".format(len(cur.fetchall()), database_filename))
+    print("\tThere are now {} total rows for each table in \"{}\".".format(len(cur.fetchall()), database_filename))
 
-    get_more = input("Would you like to collect 2o more headlines and abstracts? Yes or No: ")
+    get_more = input("\tWould you like to collect 2o more headlines and abstracts? Yes or No: ")
 
     if get_more == "Yes":
         get_headlines_and_abstracts(database_filename, conn, cur)

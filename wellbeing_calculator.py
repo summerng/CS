@@ -51,7 +51,7 @@ def calculate_wellbeing_scores(database_filename, conn, cur):
 
 def write_to_file(data_list):
 
-    filename = input("Enter the csv filename where you would like to save this data: ")
+    filename = input("\tEnter the csv filename where you would like to save this data: ")
     if not filename.endswith(".csv"):
         filename += ".csv"
 
@@ -62,4 +62,6 @@ def write_to_file(data_list):
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(["id", "quality of life metric"])
         csvwriter.writerows(data_list)
+
+    print("\tWrote calculated data to \"{}\"".format(filename))
   

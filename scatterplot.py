@@ -3,21 +3,23 @@ import plotly.express as px
 import plotly.graph_objects as go
 import requests
 from file_reader import file_reader
+from file_reader import file_reader
+from file_reader import ask_for_csv_filename
 
 
-def scatterplot(filename):
+def scatterplot():
     base_url = "https://api.teleport.org/api/urban_areas/slug:new-york/scores/"
     r = requests.get(base_url)
     d = r.json()
     city_score = d["teleport_city_score"]
     avg_sentiment = 0
 
-    t = file_reader(filename)
+    t = file_reader(ask_for_csv_filename())
     for sentiment in t[1]:
         avg_sentiment += sentiment
-        avg_sentiment = avg_sentiment / len(t[1])
+    avg_sentiment = avg_sentiment / len(t[1])
 
-    avg_sentiment = avg_sentiment * 100  
+    avg_sentiment = avg_sentiment
     fig_scatter = px.scatter(x=t[0], y= t[1],
                 color=t[1], color_continuous_scale='Magma')
     fig_scatter.add_shape(
