@@ -24,3 +24,5 @@ def get_quality_of_life_for_NY():
 
     # score of life in NYC
     nyc_score = cache_dict_teleport["teleport_city_score"]
+
+    return nyc_score

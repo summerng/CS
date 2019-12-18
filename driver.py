@@ -12,6 +12,8 @@ from wellbeing_calculator import calculate_wellbeing_scores
 from headlines_abstracts import get_headlines_and_abstracts
 from quality_of_life import get_quality_of_life_for_NY
 from bar_chart import compose_bar_chart
+from scatterplot import scatterplot
+from piechart import piechart
 
 paralleldots.set_api_key("W6l89LRnF8YE1eRBW1rD2yqzCgOKOWvyZcxpNSD9nLo")
 
@@ -21,7 +23,7 @@ def print_opening():
     """
     = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
     
-                Welcome to "Accuracy of New York Headlines Against Wellbeing Measure"
+                Welcome to "Accuracy of New York Headlines Against Quality of Life Measure"
     
     Description:
             Firstly, This program collects news headlines or abstracts  
@@ -29,9 +31,10 @@ def print_opening():
             Secondly, the program can then run each of the headlines or
             abstracts through a text sentiment analyzer API to get the 
             positive, neutral, and negative sentiment scores for a given
-            headline or abstract.  Thirdly, the program uses these scores
-            to calculate a predicted wellbeing score for each headline
-            or abstract.  Fourthly, the program calls the ...
+            headline and/or abstract.  Thirdly, the program uses these scores
+            to calculate an overall sentiment score for each headline
+            and abstract pair. Fourthly, the program allows for a series 
+            of visualizations to be made...
     """
     )
 
@@ -39,7 +42,7 @@ def print_opening():
 def print_closing():
     print(
     """
-    Thank you for using <Program name>!!!
+    Thank you for using Accuracy of New York Headlines Against Quality of Life Measure!!!
 
     Exiting...
     """
@@ -91,11 +94,11 @@ def handle_input(database_filename, conn, cur):
     elif user_input == "3":
         calculate_wellbeing_scores(database_filename, conn, cur)
     elif user_input == "4":
-        """Implement"""
+        scatterplot("quality_of_life.csv")
     elif user_input == "5":
         compose_bar_chart()
     elif user_input == "6":
-        """Implement"""
+        piechart(database_filename, conn, cur)
     elif user_input == "7":
         """Implement"""
     elif user_input == "8":
