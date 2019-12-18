@@ -5,115 +5,95 @@ sentiment.py
 This file extracts the headlines from <headline database>, runs API calls for them on
 <sentiment API>, and then stores the 
 
-
-
-
 """
 
 import paralleldots
 import sqlite3
-
 paralleldots.set_api_key("W6l89LRnF8YE1eRBW1rD2yqzCgOKOWvyZcxpNSD9nLo")
 
-############################################################################################################3
-# Connect to headlines database
-head_conn = sqlite3.connect("headlines.db")
-head_cur = head_conn.cursor()
 
-# Connect to sentiment database
-sent_conn = sqlite3.connect("sentiments_test")
-sent_cur = sent_conn.cursor()
+def call_sentiment_api(database_filename, conn, cur):
 
-sent_cur.execute('CREATE TABLE IF NOT EXISTS "Sentiment Values" (Headline TEXT PRIMARY KEY, ' +
-                 '"Negative Sentiment" REAL, "Neutral Sentiment" REAL, "Positive Sentiment" REAL)')
-sent_cur.execute('CREATE TABLE IF NOT EXISTS "Predominant Sentiment Types" (Headline TEXT PRIMARY KEY, ' +
-                 '"Predominant Sentiment Type" TEXT)')
-# sent_cur.execute("CREATE TABLE IF NOT EXISTS Negative_Sentiment")
-# sent_cur.execute("CREATE TABLE IF NOT EXISTS Neutral_Sentiment")
-# sent_cur.execute("CREATE TABLE IF NOT EXISTS Positive_Sentiment")
+    # Print opening message for this program action
+    print(
+    """
+    ================================================================================
+    = Collect text sentiment values for headlines/abstracts from Parallel Dots API =
+    ================================================================================
+    """
+    )
 
+    # Create the negative, neutral, and positive sentiment tables in the sentiment database
+    cur.execute('CREATE TABLE IF NOT EXISTS "Negative Sentiment Per Headline and Abstract" ' + 
+                    '(id INTEGER PRIMARY KEY, "Headline and Abstract" TEXT, "Negative Sentiment" REAL)')
+    cur.execute('CREATE TABLE IF NOT EXISTS "Neutral Sentiment Per Headline and Abstract" ' + 
+                    '(id INTEGER PRIMARY KEY, "Headline and Abstract" TEXT, "Neutral Sentiment" REAL)')
+    cur.execute('CREATE TABLE IF NOT EXISTS "Positive Sentiment Per Headline and Abstract" ' + 
+                    '(id INTEGER PRIMARY KEY, "Headline and Abstract" TEXT, "Positive Sentiment" REAL)')
 
-english = "en"
-
-
-def call_api():
-
-    head_cur.execute("SELECT Headline FROM Headlines")
+    # Select the headlines
+    cur.execute("SELECT Headlines.Headline, Abstracts.Abstract FROM Headlines INNER JOIN Abstracts ON Headlines.id" +
+                " = Abstracts.id")
     call_list = []
-    count = 0
+    id_count = 0 ################################################
 
-    for row in head_cur:
-        headline = row[0].strip()  # Should probably strip anyway beforehand
+    for row in cur.fetchall():
+        headline = row[0]
+        abstract = row[1]
+        headline_and_abstract = headline + " " + abstract
 
-        sent_cur.execute('SELECT Headline FROM "Sentiment Values" WHERE Headline = ?', (headline,))
+        # Should check other two tables too
+        # Change headline to id
+        cur.execute('SELECT "Headline and Abstract" FROM "Negative Sentiment Per Headline and Abstract" WHERE ' + 
+                    '"Headline and Abstract" = ?', (headline_and_abstract,))
 
-        if sent_cur.fetchone() == None:
-            call_list.append(headline)
-            count += 1
-        else:
-            sent_cur.execute('SELECT Headline FROM "Predominant Sentiment Types" WHERE Headline = ?', (headline,))
-            if sent_cur.fetchone() == None:
-                add_sentiment_type_to_existing(headline)
+        # If this headline is not in the sentiment database, add it to the call list
+        if cur.fetchone() == None:
+            call_list.append(headline_and_abstract)
 
-        if count == 20:
+        # else:
+        #     sent_cur.execute('SELECT Headline FROM "Predominant Sentiment Types" WHERE Headline = ?', (headline,))
+        #     if sent_cur.fetchone() == None:
+        #         add_sentiment_type_to_existing(headline)
+
+        id_count += 1 ########################################################################3
+
+        # Once the call_list reaches 20 new items, move on to calling API
+        if len(call_list) == 20:
             break
     
-    # Call API
+
+    # Call API if there are any new items in call list
     if len(call_list) > 0:
 
+        # Call Paralleldots API on list of new items
+        english = "en"
         response = paralleldots.batch_sentiment(call_list, english)
-
         sentiment_list = response["sentiment"]
 
+        # Loop through each headline and add the headline and three sentiment values
+        # to sentiment database
         for ix in range(len(sentiment_list)):
-            headline = call_list[ix].strip('"')
+            headline_and_abstract = call_list[ix]
             neg_sent = sentiment_list[ix]["negative"]
             neut_sent = sentiment_list[ix]["neutral"]
             pos_sent = sentiment_list[ix]["positive"]
 
-            table_values = [headline, neg_sent, neut_sent, pos_sent]
+            id_val = id_count - len(sentiment_list) + 1 + ix ##############################################################
 
-            sentiment_values = [neg_sent, neut_sent, pos_sent]
-            max_sentiment_value = max(sentiment_values)
-            sentiment_type = "Positive"
+            cur.execute('INSERT INTO "Negative Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neg_sent))
+            cur.execute('INSERT INTO "Neutral Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neut_sent))
+            cur.execute('INSERT INTO "Positive Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, pos_sent))
 
-            if max_sentiment_value == neg_sent: sentiment_type = "Negative"
-            elif max_sentiment_value == neut_sent: sentiment_type = "Neutral"
+    conn.commit()
 
-            sent_cur.execute('INSERT INTO "Sentiment Values" VALUES (?,?,?,?)', table_values)
-            sent_cur.execute('INSERT INTO "Predominant Sentiment Types" VALUES (?,?)', (headline, sentiment_type))
-
-
-    get_more = input("Would you like to calculate 2o more values? Y or N")
-
-    if get_more == "Y":
-        call_api()
-
-
-def add_sentiment_type_to_existing(headline):
-    sent_cur.execute('SELECT "Negative Sentiment", "Neutral Sentiment", "Positive Sentiment" FROM "Sentiment Values" WHERE Headline = ?', (headline,))
-    neg_sent, neut_sent, pos_sent = sent_cur.fetchone()
-
-    table_values = [headline, neg_sent, neut_sent, pos_sent]
-
-    sentiment_values = [neg_sent, neut_sent, pos_sent]
-    max_sentiment_value = max(sentiment_values)
-    sentiment_type = "Positive"
-
-    if max_sentiment_value == neg_sent: sentiment_type = "Negative"
-    elif max_sentiment_value == neut_sent: sentiment_type = "Neutral"
-
-    sent_cur.execute('INSERT INTO "Predominant Sentiment Types" VALUES (?,?)', (headline, sentiment_type))
-
-
+    print("Added {} rows to the sentiment tables in \"{}\".".format(len(call_list), database_filename))
+    cur.execute('SELECT "Headline and Abstract" FROM "Negative Sentiment Per Headline and Abstract"')
+    print("There are now {} total rows for each sentiment table in \"{}\".".format(len(cur.fetchall()), database_filename))
 
     
-call_api()
 
-sent_conn.commit()
-head_conn.close()
-sent_conn.close()
+    get_more = input("Would you like to calculate 2o more values? Yes or No: ")
 
-
-
-
+    if get_more == "Yes":
+        call_sentiment_api(database_filename, conn, cur)
