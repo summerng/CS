@@ -7,10 +7,11 @@ import paralleldots
 import requests
 import sqlite3
 
-#from sentiment import call_sentiment_api
+from sentiment import call_sentiment_api
 from wellbeing_calculator import calculate_wellbeing_scores 
 from headlines_abstracts import get_headlines_and_abstracts
 from quality_of_life import get_quality_of_life_for_NY
+
 from scatterplot import scatterplot
 from piechart import piechart
 
@@ -22,7 +23,7 @@ def print_opening():
     """
     = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
     
-                Welcome to "Accuracy of New York Headlines Against Wellbeing Measure"
+                Welcome to "Accuracy of New York Headlines Against Quality of Life Measure"
     
     Description:
             Firstly, This program collects news headlines or abstracts  
@@ -30,9 +31,10 @@ def print_opening():
             Secondly, the program can then run each of the headlines or
             abstracts through a text sentiment analyzer API to get the 
             positive, neutral, and negative sentiment scores for a given
-            headline or abstract.  Thirdly, the program uses these scores
-            to calculate a predicted wellbeing score for each headline
-            or abstract.  Fourthly, the program calls the ...
+            headline and/or abstract.  Thirdly, the program uses these scores
+            to calculate an overall sentiment score for each headline
+            and abstract pair. Fourthly, the program allows for a series 
+            of visualizations to be made. 
     """
     )
 
@@ -55,7 +57,7 @@ def ask_for_database_filename():
 def print_closing():
     print(
     """
-    Thank you for using <Program name>!!!
+    Thank you for using Accuracy of New York Headlines Against Quality of Life Measure!!!
 
     Exiting...
     """
