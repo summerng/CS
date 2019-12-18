@@ -18,7 +18,8 @@ def scatterplot(filename):
         avg_sentiment = avg_sentiment / len(t[1])
 
     avg_sentiment = avg_sentiment * 100  
-    fig_scatter = px.scatter(x=t[0], y= t[1])
+    fig_scatter = px.scatter(x=t[0], y= t[1],
+                color=t[1], color_continuous_scale='Magma')
     fig_scatter.add_shape(
         # Line Horizontal
         go.layout.Shape(
@@ -28,8 +29,8 @@ def scatterplot(filename):
             x1=105,
             y1=avg_sentiment,
             line=dict(
-                color="red",
-                width=4
+                color="black",
+                width=3
             )
     ))
     fig_scatter.add_shape(
@@ -41,8 +42,8 @@ def scatterplot(filename):
             x1=105,
             y1=city_score,
             line=dict(
-                color="pink",
-                width=4
+                color="black",
+                width=3
             )
     ))
     # Create scatter trace of text labels
@@ -59,6 +60,15 @@ def scatterplot(filename):
         xaxis_title="Headline/Abstract ID",
         yaxis_title="Sentiment Score (out of 100)"
     )
+
+    print(
+    """
+    ================================================================================
+                               = Creating scatterplot =
+    ================================================================================
+    """
+    )
+
     fig_scatter.show()
 
 
