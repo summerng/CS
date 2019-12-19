@@ -74,7 +74,7 @@ def ask_for_database_filename():
 def handle_input(database_filename, conn, cur):
     user_input = input(
     """
-    Please enter a number (1-8) to perform an action:
+    Please enter a number (1-7) to perform an action:
     Please perform actions 1, 2, and 3 in order before anything else.
 
         API
@@ -88,10 +88,9 @@ def handle_input(database_filename, conn, cur):
             (4) Compose scatter plot
             (5) Compose bar chart
             (6) Compose pie chart
-            (7) Compose some other graph
         
         OTHER
-            (8) Quit
+            (7) Quit
 
     User input: """)
 
@@ -108,8 +107,6 @@ def handle_input(database_filename, conn, cur):
     elif user_input == "6":
         piechart(database_filename, conn, cur)
     elif user_input == "7":
-        """Implement"""
-    elif user_input == "8":
         """Implement"""
         return False
     # else

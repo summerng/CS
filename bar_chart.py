@@ -1,5 +1,6 @@
 #import plotly.express as px
 import plotly.graph_objects as go
+import requests
 from file_reader import file_reader
 from file_reader import ask_for_csv_filename
 
