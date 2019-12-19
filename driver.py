@@ -10,7 +10,6 @@ import sqlite3
 from sentiment import call_sentiment_api
 from wellbeing_calculator import calculate_wellbeing_scores 
 from headlines_abstracts import get_headlines_and_abstracts
-from quality_of_life import get_quality_of_life_for_NY
 from bar_chart import compose_bar_chart
 from scatterplot import scatterplot
 from piechart import piechart
