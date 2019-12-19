@@ -17,6 +17,15 @@ def compose_bar_chart():
     # Gets the lists of ids and quality of life scores
     ids, scores = file_reader(ask_for_csv_filename())
 
+    # Get NY quality of life score
+    base_url = "https://api.teleport.org/api/urban_areas/slug:new-york/scores/"
+    r = requests.get(base_url)
+    d = r.json()
+    city_score = d["teleport_city_score"]
+
+    # Get average sentiment score from csv file
+    avg_sentiment = sum(scores) / len(scores)
+
     # fig = px.histogram(scores, x=scores, nbins=20, labels={'x' : "Quality of Life Metric"})
             
     # fig.show()
@@ -53,10 +62,10 @@ def compose_bar_chart():
     fig.add_shape(
         go.layout.Shape(
             type="line",
-            x0=29,
+            x0=avg_sentiment,
             y0=0,
-            x1=29,
-            y1=20,
+            x1=avg_sentiment,
+            y1=50,
             line=dict(
                 color="red",
                 width=3
@@ -65,19 +74,19 @@ def compose_bar_chart():
     )
 
     fig.add_trace(go.Scatter(
-        x=[36.5],
+        x=[avg_sentiment + 1],
         y=[15],
-        text=["Average Sentiment Score: (~29)"],
+        text=["Average Sentiment Score: ({}})".format(avg_sentiment)],
         mode="text"
     ))
 
     fig.add_shape(
     go.layout.Shape(
         type="line",
-        x0=69,
+        x0=city_score,
         y0=0,
-        x1=69,
-        y1=20,
+        x1=city_score,
+        y1=50,
         line=dict(
             color="yellow",
             width=3
@@ -86,9 +95,9 @@ def compose_bar_chart():
     )
 
     fig.add_trace(go.Scatter(
-        x=[76],
+        x=[city_score + 1],
         y=[15],
-        text=["QOL Score for New York: (~69)"],
+        text=["QOL Score for New York: ({}})".format(city_score)],
         mode="text"
     ))
 
