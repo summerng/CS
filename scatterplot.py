@@ -15,9 +15,8 @@ def scatterplot(filename):
     t = file_reader(filename)
     for sentiment in t[1]:
         avg_sentiment += sentiment
-        avg_sentiment = avg_sentiment / len(t[1])
+    avg_sentiment = avg_sentiment / len(t[1])
 
-    avg_sentiment = avg_sentiment * 100  
     fig_scatter = px.scatter(x=t[0], y= t[1],
                 color=t[1], color_continuous_scale='Magma')
     fig_scatter.add_shape(
@@ -49,7 +48,7 @@ def scatterplot(filename):
     # Create scatter trace of text labels
     fig_scatter.add_trace(go.Scatter(
         x=[5, 5],
-        y=[27, 69],
+        y=[avg_sentiment, city_score],
         text=["Average Sentiment Score",
           "Quality of Life Score for New York"],
         mode="text",
