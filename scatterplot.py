@@ -19,7 +19,6 @@ def scatterplot():
         avg_sentiment += sentiment
     avg_sentiment = avg_sentiment / len(t[1])
 
-    avg_sentiment = avg_sentiment
     fig_scatter = px.scatter(x=t[0], y= t[1],
                 color=t[1], color_continuous_scale='Magma')
     fig_scatter.add_shape(
@@ -51,7 +50,7 @@ def scatterplot():
     # Create scatter trace of text labels
     fig_scatter.add_trace(go.Scatter(
         x=[5, 5],
-        y=[avg_sentiment, city_score],
+        y=[avg_sentiment + 5, city_score + 5],
         text=["Average Sentiment Score",
           "Quality of Life Score for New York"],
         mode="text",
