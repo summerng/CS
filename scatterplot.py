@@ -50,7 +50,7 @@ def scatterplot():
     # Create scatter trace of text labels
     fig_scatter.add_trace(go.Scatter(
         x=[5, 5],
-        y=[avg_sentiment + 5, city_score + 5],
+        y=[avg_sentiment + 2, city_score + 2],
         text=["Average Sentiment Score",
           "Quality of Life Score for New York"],
         mode="text",
