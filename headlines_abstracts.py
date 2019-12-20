@@ -97,7 +97,7 @@ def get_headlines_and_abstracts(database_filename, conn, cur):
     cur.execute('SELECT Headline FROM Headlines')
     print("\tThere are now {} total rows for each table in \"{}\".".format(len(cur.fetchall()), database_filename))
 
-    get_more = input("\tWould you like to collect 2o more headlines and abstracts? Yes or No: ")
+    get_more = input("\tWould you like to collect 20 more headlines and abstracts? Yes or No: ")
 
     if get_more == "Yes":
         get_headlines_and_abstracts(database_filename, conn, cur)

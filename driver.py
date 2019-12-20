@@ -59,6 +59,8 @@ def print_closing():
 def ask_for_database_filename():
     # Get the filename of the headline/abstract database via user input
     database_filename = input("\tPlease enter a name for a new or existing database you would like to use: ")
+    if not database_filename.endswith(".db"):
+        database_filename += ".db"
 
     try:
         # Connect to the headline/abstract database
@@ -86,7 +88,7 @@ def handle_input(database_filename, conn, cur):
 
         VISUALIZE
             (4) Compose scatter plot
-            (5) Compose bar chart
+            (5) Compose histogram chart
             (6) Compose pie chart
         
         OTHER

@@ -92,7 +92,7 @@ def call_sentiment_api(database_filename, conn, cur):
             cur.execute('SELECT "Headline and Abstract" FROM "Negative Sentiment Per Headline and Abstract"')
             print("\tThere are now {} total rows for each sentiment table in \"{}\".".format(len(cur.fetchall()), database_filename))
 
-            get_more = input("\tWould you like to calculate 2o more values? Yes or No: ")
+            get_more = input("\tWould you like to calculate 20 more values? Yes or No: ")
 
             if get_more == "Yes":
                 call_sentiment_api(database_filename, conn, cur)

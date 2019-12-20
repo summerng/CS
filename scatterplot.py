@@ -8,6 +8,15 @@ from file_reader import ask_for_csv_filename
 
 
 def scatterplot():
+
+    print(
+    """
+    ================================================================================
+                               = Creating scatterplot =
+    ================================================================================
+    """
+    )
+
     base_url = "https://api.teleport.org/api/urban_areas/slug:new-york/scores/"
     r = requests.get(base_url)
     d = r.json()
@@ -60,14 +69,6 @@ def scatterplot():
         title="Sentiment Score for Each Headline/Abstract",
         xaxis_title="Headline/Abstract ID",
         yaxis_title="Sentiment Score (out of 100)"
-    )
-
-    print(
-    """
-    ================================================================================
-                               = Creating scatterplot =
-    ================================================================================
-    """
     )
 
     fig_scatter.show()
