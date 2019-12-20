@@ -57,32 +57,35 @@ def get_headlines_and_abstracts(database_filename, conn, cur):
         # tot += 10
 
         if tot < 20: 
+            try:
+                for d in d_nyt["response"]["docs"]:
+                    headline = d["headline"]["main"]
+                    if headline not in headline_list:
+                        headline_list.append(headline)
 
-            for d in d_nyt["response"]["docs"]:
-                headline = d["headline"]["main"]
-                if headline not in headline_list:
-                    headline_list.append(headline)
+                    abstract = d["abstract"]
+                    if abstract not in abstract_list:
+                        abstract_list.append(abstract) 
 
-                abstract = d["abstract"]
-                if abstract not in abstract_list:
-                    abstract_list.append(abstract) 
-
-            for headline in headline_list:
-                cur.execute("SELECT Headline FROM Headlines WHERE Headline = ?", [headline])
-                if cur.fetchone() == None: # checks to see if headline is in db
-                    cur.execute("INSERT INTO Headlines (Headline) VALUES (?)", [headline])
-                    tot += 1
-
-            for abstract in abstract_list:
-                cur.execute("SELECT Abstract FROM Abstracts WHERE Abstract = ?", [abstract])
-                if cur.fetchone() == None:
-                    cur.execute("INSERT INTO Abstracts (Abstract) VALUES (?)", [abstract])
-
-            """if len(headline_list) > 0:
                 for headline in headline_list:
-                    cur.execute("INSERT INTO Headlines (Headline) VALUES (?)", [headline])
+                    cur.execute("SELECT Headline FROM Headlines WHERE Headline = ?", [headline])
+                    if cur.fetchone() == None: # checks to see if headline is in db
+                        cur.execute("INSERT INTO Headlines (Headline) VALUES (?)", [headline])
+                        tot += 1
+
                 for abstract in abstract_list:
-                    cur.execute("INSERT INTO Abstracts (Abstract) VALUES (?)", [abstract])"""
+                    cur.execute("SELECT Abstract FROM Abstracts WHERE Abstract = ?", [abstract])
+                    if cur.fetchone() == None:
+                        cur.execute("INSERT INTO Abstracts (Abstract) VALUES (?)", [abstract])
+
+                """if len(headline_list) > 0:
+                    for headline in headline_list:
+                        cur.execute("INSERT INTO Headlines (Headline) VALUES (?)", [headline])
+                    for abstract in abstract_list:
+                        cur.execute("INSERT INTO Abstracts (Abstract) VALUES (?)", [abstract])"""
+            except:
+                print("\tThe API sent back a call limit exceeded message. Please wait a moment and try again or restart the program.")
+                return
         else:
             break
 

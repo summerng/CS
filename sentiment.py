@@ -73,27 +73,28 @@ def call_sentiment_api(database_filename, conn, cur):
 
         # Loop through each headline and add the headline and three sentiment values
         # to sentiment database
-        for ix in range(len(sentiment_list)):
-            headline_and_abstract = call_list[ix]
-            neg_sent = sentiment_list[ix]["negative"]
-            neut_sent = sentiment_list[ix]["neutral"]
-            pos_sent = sentiment_list[ix]["positive"]
+        try:
+            for ix in range(len(sentiment_list)):
+                headline_and_abstract = call_list[ix]
+                neg_sent = sentiment_list[ix]["negative"]
+                neut_sent = sentiment_list[ix]["neutral"]
+                pos_sent = sentiment_list[ix]["positive"]
 
-            id_val = id_count - len(sentiment_list) + 1 + ix ##############################################################
+                id_val = id_count - len(sentiment_list) + 1 + ix ##############################################################
+        
+                cur.execute('INSERT INTO "Negative Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neg_sent))
+                cur.execute('INSERT INTO "Neutral Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neut_sent))
+                cur.execute('INSERT INTO "Positive Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, pos_sent))
 
-            cur.execute('INSERT INTO "Negative Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neg_sent))
-            cur.execute('INSERT INTO "Neutral Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neut_sent))
-            cur.execute('INSERT INTO "Positive Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, pos_sent))
+            conn.commit()
 
-    conn.commit()
+            print("\tAdded {} rows to the sentiment tables in \"{}\".".format(len(call_list), database_filename))
+            cur.execute('SELECT "Headline and Abstract" FROM "Negative Sentiment Per Headline and Abstract"')
+            print("\tThere are now {} total rows for each sentiment table in \"{}\".".format(len(cur.fetchall()), database_filename))
 
-    print("\tAdded {} rows to the sentiment tables in \"{}\".".format(len(call_list), database_filename))
-    cur.execute('SELECT "Headline and Abstract" FROM "Negative Sentiment Per Headline and Abstract"')
-    print("\tThere are now {} total rows for each sentiment table in \"{}\".".format(len(cur.fetchall()), database_filename))
+            get_more = input("\tWould you like to calculate 2o more values? Yes or No: ")
 
-    
-
-    get_more = input("\tWould you like to calculate 2o more values? Yes or No: ")
-
-    if get_more == "Yes":
-        call_sentiment_api(database_filename, conn, cur)
+            if get_more == "Yes":
+                call_sentiment_api(database_filename, conn, cur)
+        except:
+            print("\tThe API sent back a call limit exceeded message. Please wait a moment and try again or restart the program.")

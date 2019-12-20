@@ -10,7 +10,7 @@ def compose_bar_chart():
     print(
     """
     ================================================================================
-    =                              Compose bar chart                               =
+    =                         Compose histogram chart                              =
     ================================================================================
     """
     )
@@ -75,9 +75,9 @@ def compose_bar_chart():
     )
 
     fig.add_trace(go.Scatter(
-        x=[avg_sentiment + 1],
+        x=[avg_sentiment + 8],
         y=[15],
-        text=["Average Sentiment Score: ({}})".format(avg_sentiment)],
+        text=["Average Sentiment Score: ({})".format(round(avg_sentiment, 2))],
         mode="text"
     ))
 
@@ -96,9 +96,9 @@ def compose_bar_chart():
     )
 
     fig.add_trace(go.Scatter(
-        x=[city_score + 1],
+        x=[city_score + 8],
         y=[15],
-        text=["QOL Score for New York: ({}})".format(city_score)],
+        text=["QOL Score for New York: ({})".format(round(city_score, 2))],
         mode="text"
     ))
 
