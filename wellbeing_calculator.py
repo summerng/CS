@@ -20,6 +20,7 @@ def calculate_wellbeing_scores(database_filename, conn, cur):
     """
     )
 
+    # Using JOIN
     cur.execute('SELECT Headlines.id, Headlines.Headline, Abstracts.Abstract, ' + \
                '"Negative Sentiment Per Headline and Abstract"."Negative Sentiment", ' +\
                '"Neutral Sentiment Per Headline and Abstract"."Neutral Sentiment", ' + \
@@ -31,8 +32,6 @@ def calculate_wellbeing_scores(database_filename, conn, cur):
                'Headlines.id = "Neutral Sentiment Per Headline and Abstract".id ' + \
                'INNER JOIN "Positive Sentiment Per Headline and Abstract" ON ' + \
                'Headlines.id = "Positive Sentiment Per Headline and Abstract".id')
-
-    #cur.execute('SELECT Headlines.Headline, Abstracts.Abstract, "Negative Sentiment Per Headline and Abstract"."Negative Sentiment", "Neutral Sentiment Per Headline and Abstract"."Neutral Sentiment", "Positive Sentiment Per Headline and Abstract"."Positive Sentiment" FROM Headlines INNER JOIN Abstracts ON Headlines.id = Abstracts.id INNER JOIN "Negative Sentiment Per Headline and Abstract" ON Headlines.id = "Negative Sentiment Per Headline and Abstract".id INNER JOIN "Neutral Sentiment Per Headline and Abstract" ON Headlines.id = "Neutral Sentiment Per Headline and Abstract".id INNER JOIN "Positive Sentiment Per Headline and Abstract" ON Headlines.id = "Positiive Sentiment Per Headline and Abstract".id')
 
     data_list = []
     for row in cur.fetchall():

@@ -1,4 +1,3 @@
-#import plotly.express as px
 import plotly.graph_objects as go
 import requests
 from file_reader import file_reader
@@ -26,10 +25,6 @@ def compose_bar_chart():
 
     # Get average sentiment score from csv file
     avg_sentiment = sum(scores) / len(scores)
-
-    # fig = px.histogram(scores, x=scores, nbins=20, labels={'x' : "Quality of Life Metric"})
-            
-    # fig.show()
 
     fig = go.Figure()
     fig.add_trace(go.Histogram(

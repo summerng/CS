@@ -2,8 +2,8 @@
 
 sentiment.py
 
-This file extracts the headlines from <headline database>, runs API calls for them on
-<sentiment API>, and then stores the 
+This file extracts the headlines abstract pairs from the database, runs API calls for them on
+the Parallel Dots API, and then stores them in the database. 
 
 """
 
@@ -35,15 +35,14 @@ def call_sentiment_api(database_filename, conn, cur):
     cur.execute("SELECT Headlines.Headline, Abstracts.Abstract FROM Headlines INNER JOIN Abstracts ON Headlines.id" +
                 " = Abstracts.id")
     call_list = []
-    id_count = 0 ################################################
+    id_count = 0
 
     for row in cur.fetchall():
         headline = row[0]
         abstract = row[1]
         headline_and_abstract = headline + " " + abstract
 
-        # Should check other two tables too
-        # Change headline to id
+        # If not in one table, is not in the others too
         cur.execute('SELECT "Headline and Abstract" FROM "Negative Sentiment Per Headline and Abstract" WHERE ' + 
                     '"Headline and Abstract" = ?', (headline_and_abstract,))
 
@@ -51,12 +50,7 @@ def call_sentiment_api(database_filename, conn, cur):
         if cur.fetchone() == None:
             call_list.append(headline_and_abstract)
 
-        # else:
-        #     sent_cur.execute('SELECT Headline FROM "Predominant Sentiment Types" WHERE Headline = ?', (headline,))
-        #     if sent_cur.fetchone() == None:
-        #         add_sentiment_type_to_existing(headline)
-
-        id_count += 1 ########################################################################3
+        id_count += 1
 
         # Once the call_list reaches 20 new items, move on to calling API
         if len(call_list) == 20:
@@ -80,7 +74,8 @@ def call_sentiment_api(database_filename, conn, cur):
                 neut_sent = sentiment_list[ix]["neutral"]
                 pos_sent = sentiment_list[ix]["positive"]
 
-                id_val = id_count - len(sentiment_list) + 1 + ix ##############################################################
+                # Calculating the id based on the headline
+                id_val = id_count - len(sentiment_list) + 1 + ix
         
                 cur.execute('INSERT INTO "Negative Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neg_sent))
                 cur.execute('INSERT INTO "Neutral Sentiment Per Headline and Abstract" VALUES (?,?,?)', (id_val, headline_and_abstract, neut_sent))

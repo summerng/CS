@@ -5,21 +5,7 @@ import sqlite3
 import paralleldots
 
 
-# PART 2: Calling New York Times (NYT) API
-
-"""
-NYT API only returns 10 results at a time, so we have to
-call it 10 times for a total of 100 results.
-SIDENOTE!!!: i'm a bit unsure by the instructions if we need to 
-run our code 10 times to get the data or if using a for loop is fine?
-"""
-# create empty list, check to see if headline is in list, keep adding until 20 and then break
-
 def get_headlines_and_abstracts(database_filename, conn, cur):
-    #conn = sqlite3.connect("/Users/BinhNguyenAn/Desktop/SI_206/CS/headlines.db")
-
-    # creating database
-    #ur = conn.cursor()
 
     # Print opening message for this program action
     print(
@@ -31,20 +17,14 @@ def get_headlines_and_abstracts(database_filename, conn, cur):
     )
 
     cur.execute("CREATE TABLE IF NOT EXISTS Headlines (id INTEGER PRIMARY KEY, Headline TEXT)")
-    #for headline in lines: #reminder that lines was a variable defined above that is just a list of all of the headlines
-    #    cur.execute("INSERT INTO Headlines (Headline) VALUES (?)", [headline])
 
     cur.execute("CREATE TABLE IF NOT EXISTS Abstracts (id INTEGER PRIMARY KEY, Abstract TEXT)")
-    #for abstract in abstract_lines: #reminder that lines was a variable defined above that is just a list of all of the headlines
-    #    cur.execute("INSERT INTO Abstracts (Abstract) VALUES (?)", [abstract])
-    #cur.execute("SELECT Headlines.Headline, Abstracts.Abstract FROM Headlines INNER JOIN Abstracts ON Headlines.id = Abstracts.id")
-
-    # check 
-    # writing for loop - it is range 11 instead of 10 because there are repeat headlines that we shouldn't collect twice
+ 
     headline_list = []
     abstract_list = []
     tot = 0 
 
+    # writing for loop - it is range 11 instead of 10 because there are repeat headlines that we shouldn't collect twice
     for x in range(11): 
         
 
@@ -53,8 +33,6 @@ def get_headlines_and_abstracts(database_filename, conn, cur):
 
         r_nyt = requests.get(base_url_nyt) 
         d_nyt = r_nyt.json()
-
-        # tot += 10
 
         if tot < 20: 
             try:
@@ -78,20 +56,13 @@ def get_headlines_and_abstracts(database_filename, conn, cur):
                     if cur.fetchone() == None:
                         cur.execute("INSERT INTO Abstracts (Abstract) VALUES (?)", [abstract])
 
-                """if len(headline_list) > 0:
-                    for headline in headline_list:
-                        cur.execute("INSERT INTO Headlines (Headline) VALUES (?)", [headline])
-                    for abstract in abstract_list:
-                        cur.execute("INSERT INTO Abstracts (Abstract) VALUES (?)", [abstract])"""
             except:
                 print("\tThe API sent back a call limit exceeded message. Please wait a moment and try again or restart the program.")
                 return
         else:
             break
 
-    # cur.execute("CREATE TABLE test_table AS SELECT Headlines.Headline, Abstracts.Abstract FROM Headlines INNER JOIN Abstracts ON Headlines.id = Abstracts.id")
     conn.commit()
-
     
     print("\tAdded {} rows to all three tables in \"{}\".".format(tot, database_filename))
     cur.execute('SELECT Headline FROM Headlines')
